@@ -6,27 +6,13 @@ public class Mago extends Criatura implements Magico{
     private String hechizos;
     private Arma arma;
  
-    /**
-     * Constructor del Mago.
-     *
-     * @param nombre   Nombre del mago
-     * @param salud    Puntos de salud iniciales
-     * @param fuerza   Fuerza base del mago
-     * @param hechizos Hechizo inicial que conoce el mago
-     */
+    
     public Mago(String nombre, int salud, int fuerza, String hechizos) {
         super(nombre, salud, fuerza);
         this.hechizos = hechizos;
         this.arma = null;
     }
  
-    /**
-     * Ataca a una criatura objetivo usando hechizos.
-     * El mago aplica su fuerza base como daño.
-     * Si tiene un arma equipada, se suma el daño adicional del arma.
-     *
-     * @param objetivo La criatura que recibirá el ataque
-     */
     @Override
     public void atacar(Criatura objetivo) {
         int dañoTotal = fuerza;
@@ -43,13 +29,7 @@ public class Mago extends Criatura implements Magico{
                 + " con el hechizo \"" + hechizos + "\"! Daño: " + dañoTotal);
         objetivo.defender(dañoTotal);
     }
- 
-    /**
-     * El mago se defiende de un ataque recibido.
-     * Usa un escudo mágico que reduce el daño recibido en un 10%.
-     *
-     * @param daño Cantidad de daño recibido
-     */
+
     @Override
     public void defender(int daño) {
         int dañoReducido = (int) (daño * 0.9); // El escudo mágico absorbe un 10% del daño
