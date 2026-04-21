@@ -1,123 +1,159 @@
 package parcial.corte2;
 
-/**
- * Aquí se crean las criaturas, se les equipan armas y se simulan batallas.
- * El método simularBatalla() es el corazón del juego: las criaturas se turnan
- * atacándose hasta que una de las dos muera.
- */
+import javax.swing.*;
+import java.awt.*;
+
+// Clase principal. Contiene la lógica de la interfaz gráfica y la simulación de batallas.
 public class Main {
 
-    /**
-     * Simula una batalla entre dos criaturas.
-     * La batalla continúa por turnos hasta que una de las criaturas muera.
-     *
-     * @param criatura1 El primer combatiente
-     * @param criatura2 El segundo combatiente
-     */
+    // Acumula los mensajes de la batalla para mostrarlos en la ventana
+    static StringBuilder logBatalla = new StringBuilder();
 
+    // Agrega una línea al log y la imprime también en consola
+    public static void log(String mensaje) {
+        logBatalla.append(mensaje).append("\n");
+        System.out.println(mensaje);
+    }
+
+    // Muestra el log completo en una ventana con scroll
+    private static void mostrarLog(String titulo) {
+        JTextArea area = new JTextArea(logBatalla.toString());
+        area.setEditable(false);
+        area.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        area.setBackground(new Color(30, 30, 30));
+        area.setForeground(new Color(200, 255, 200));
+
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(620, 420));
+
+        JOptionPane.showMessageDialog(null, scroll, titulo, JOptionPane.INFORMATION_MESSAGE);
+        logBatalla.setLength(0);
+    }
+
+    // Simula una batalla entre dos criaturas turno por turno
     public static void simularBatalla(Criatura criatura1, Criatura criatura2) {
-        System.out.println("\n" + "=".repeat(60));
-        System.out.println(" INICIO DE BATALLA" // Salto de linea
-                + "\n" + "=".repeat(60));
-        System.out.println("  " + criatura1 + "  VS  " + criatura2);
-        System.out.println("=".repeat(60) + "\n");
+        logBatalla.setLength(0);
+
+        log("BATALLA: " + criatura1.getNombre() + " vs " + criatura2.getNombre());
+        log(criatura1.toString());
+        log(criatura2.toString());
+        log("");
 
         int turno = 1;
 
-        // La batalla continúa mientras ambas criaturas estén vivas
         while (criatura1.estaViva() && criatura2.estaViva()) {
-            System.out.println("--- Turno " + turno + " ---");
+            log("Turno " + turno);
 
-            // Criatura 1 ataca a Criatura 2
-            if (criatura1.estaViva()) {
-                criatura1.atacar(criatura2);
-                System.out
-                        .println("  -> " + criatura2.getNombre() + " queda con " + criatura2.getSalud() + " de salud");
-            }
+            criatura1.atacar(criatura2);
+            log(criatura2.getNombre() + " queda con " + criatura2.getSalud() + " de salud.");
 
-            // Solo ataca la criatura 2 si sigue viva después del ataque anterior
             if (criatura2.estaViva()) {
                 criatura2.atacar(criatura1);
-                System.out
-                        .println("  -> " + criatura1.getNombre() + " queda con " + criatura1.getSalud() + " de salud");
+                log(criatura1.getNombre() + " queda con " + criatura1.getSalud() + " de salud.");
             }
 
             turno++;
-            System.out.println();
+            log("");
         }
 
-        // Resultado final de la batalla
-        System.out.println("=".repeat(60));
-        System.out.println("        🏆 RESULTADO FINAL 🏆");
+        String resultado;
         if (!criatura1.estaViva() && !criatura2.estaViva()) {
-            System.out.println("  ¡Ambas criaturas han caído! ¡Es un EMPATE!");
+            resultado = "Empate. Ambas criaturas cayeron.";
         } else if (criatura1.estaViva()) {
-            System.out.println("  🎉 ¡" + criatura1.getNombre() + " ha GANADO la batalla!");
+            resultado = "Ganador: " + criatura1.getNombre();
         } else {
-            System.out.println("  🎉 ¡" + criatura2.getNombre() + " ha GANADO la batalla!");
+            resultado = "Ganador: " + criatura2.getNombre();
         }
-        System.out.println("=".repeat(60) + "\n");
+
+        log(resultado);
+
+        mostrarLog("Batalla: " + criatura1.getNombre() + " vs " + criatura2.getNombre());
+
+        JOptionPane.showMessageDialog(
+                null,
+                resultado,
+                "Resultado",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /**
-     * Método principal del programa.
-     * Crea criaturas con características únicas, les equipa armas y simula
-     * batallas.
-     */
     public static void main(String[] args) {
 
-        System.out.println("\n🎮 BIENVENIDO AL SISTEMA DE BATALLAS DE CRIATURAS 🎮\n");
+        JOptionPane.showMessageDialog(
+                null,
+                "Bienvenido al Sistema de Batallas de Criaturas",
+                "Sistema de Batallas",
+                JOptionPane.INFORMATION_MESSAGE);
 
-        // ---- Crear armas ----
-        Arma espadaLegendaria = new Arma("Espada Legendaria", 25);
-        Arma bastonMagico = new Arma("Bastón del Caos", 20);
-        Arma garrasDragon = new Arma("Garras Ardientes", 30);
+        String[] opciones = {
+                "Dragon vs Mago",
+                "Guerrero vs Mago",
+                "Dragon vs Guerrero",
+                "Ver todas las batallas",
+                "Salir"
+        };
 
-        // ---- Crear criaturas ----
-        Dragon dragon = new Dragon("Ignis el Grande", 200, 50, "escamas de obsidiana");
-        Mago mago = new Mago("Gandalf el Sabio", 120, 40, "Bola de Fuego");
-        Guerrero guerrero = new Guerrero("Arturo el Valiente", 150, 35, "espada larga");
+        while (true) {
+            int eleccion = JOptionPane.showOptionDialog(
+                    null,
+                    "Selecciona una batalla:",
+                    "Menu de Batallas",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[0]);
 
-        // ---- Equipar armas mediante composición ----
-        dragon.equiparArma(garrasDragon);
-        mago.equiparArma(bastonMagico);
-        guerrero.equiparArma(espadaLegendaria);
+            if (eleccion == -1 || eleccion == 4) {
+                JOptionPane.showMessageDialog(null, "Hasta luego.", "Salir", JOptionPane.PLAIN_MESSAGE);
+                break;
+            }
 
-        // El mago aprende un hechizo adicional antes de la batalla
-        mago.aprenderHechizo();
+            switch (eleccion) {
 
-        // El dragón demuestra que puede volar antes de la batalla
-        dragon.volar();
-        dragon.aterrizar();
+                case 0: {
+                    Dragon d = new Dragon("Ignis", 200, 50, "escamas de obsidiana");
+                    Mago m = new Mago("Gandalf", 120, 40, "Bola de Fuego");
+                    d.equiparArma(new Arma("Garras Ardientes", 30));
+                    m.equiparArma(new Arma("Baston del Caos", 20));
+                    simularBatalla(d, m);
+                    break;
+                }
 
-        System.out.println("\n--- Criaturas listas para combatir ---");
-        System.out.println(dragon);
-        System.out.println(mago);
-        System.out.println(guerrero);
+                case 1: {
+                    Guerrero g = new Guerrero("Arturo", 150, 35, "espada larga");
+                    Mago m = new Mago("Merlin", 110, 38, "Rayo de Hielo");
+                    g.equiparArma(new Arma("Espada Legendaria", 25));
+                    simularBatalla(g, m);
+                    break;
+                }
 
-        // ---- BATALLA 1: Dragon vs Mago ----
-        // Reiniciamos las criaturas para la primera batalla
-        Dragon dragon1 = new Dragon("Ignis", 200, 50, "escamas de obsidiana");
-        Mago mago1 = new Mago("Gandalf", 120, 40, "Bola de Fuego");
-        dragon1.equiparArma(new Arma("Garras Ardientes", 30));
-        mago1.equiparArma(new Arma("Bastón del Caos", 20));
+                case 2: {
+                    Dragon d = new Dragon("Pyrax", 180, 45, "escamas de titanio");
+                    Guerrero g = new Guerrero("Leonidas", 160, 40, "hacha de guerra");
+                    g.equiparArma(new Arma("Hacha Runica", 28));
+                    simularBatalla(d, g);
+                    break;
+                }
 
-        simularBatalla(dragon1, mago1);
+                case 3: {
+                    Dragon d1 = new Dragon("Ignis", 200, 50, "escamas de obsidiana");
+                    Mago m1 = new Mago("Gandalf", 120, 40, "Bola de Fuego");
+                    d1.equiparArma(new Arma("Garras Ardientes", 30));
+                    m1.equiparArma(new Arma("Baston del Caos", 20));
+                    simularBatalla(d1, m1);
 
-        // ---- BATALLA 2: Guerrero vs Mago ----
-        Guerrero guerrero2 = new Guerrero("Arturo", 150, 35, "espada larga");
-        Mago mago2 = new Mago("Merlín", 110, 38, "Rayo de Hielo");
-        guerrero2.equiparArma(new Arma("Espada Legendaria", 25));
+                    Guerrero g2 = new Guerrero("Arturo", 150, 35, "espada larga");
+                    Mago m2 = new Mago("Merlin", 110, 38, "Rayo de Hielo");
+                    g2.equiparArma(new Arma("Espada Legendaria", 25));
+                    simularBatalla(g2, m2);
 
-        simularBatalla(guerrero2, mago2);
-
-        // ---- BATALLA 3: Dragon vs Guerrero ----
-        Dragon dragon3 = new Dragon("Pyrax", 180, 45, "escamas de titanio");
-        Guerrero guerrero3 = new Guerrero("Leonidas", 160, 40, "hacha de guerra");
-        guerrero3.equiparArma(new Arma("Hacha Rúnica", 28));
-
-        simularBatalla(dragon3, guerrero3);
-
-        System.out.println("🎮 FIN DEL JUEGO. ¡Gracias por ver las batallas! 🎮\n");
+                    Dragon d3 = new Dragon("Pyrax", 180, 45, "escamas de titanio");
+                    Guerrero g3 = new Guerrero("Leonidas", 160, 40, "hacha de guerra");
+                    g3.equiparArma(new Arma("Hacha Runica", 28));
+                    simularBatalla(d3, g3);
+                    break;
+                }
+            }
+        }
     }
 }
