@@ -1,31 +1,30 @@
 package parcial.corte2;
 
-    public abstract class Criatura {
- 
-    // Atributos básicos de toda criatura
+// Clase abstracta base para todas las criaturas del juego.
+// Define los atributos y comportamientos comunes que toda criatura debe tener.
+public abstract class Criatura {
+
     protected String nombre;
     protected int salud;
     protected int fuerza;
 
-    // Constructor para inicializar los atributos
     public Criatura(String nombre, int salud, int fuerza) {
         this.nombre = nombre;
         this.salud = salud;
         this.fuerza = fuerza;
     }
 
-    // Metodo abstracto para que cada criatura implemente su propio ataque
+    // Cada criatura implementa su propia forma de atacar
     public abstract void atacar(Criatura objetivo);
 
-    // Metodo abstracto para que cada criatura implemente su propia defensa
+    // Cada criatura implementa su propia forma de defenderse
     public abstract void defender(int daño);
 
-    // Validar si la criatura sigue viva
+    // Retorna true si la criatura sigue viva
     public boolean estaViva() {
         return salud > 0;
     }
 
-    // Getters para acceder a los atributos
     public String getNombre() {
         return nombre;
     }
@@ -38,14 +37,8 @@ package parcial.corte2;
         return fuerza;
     }
 
-    // Sobreescribir el método toString para mostrar información de la criatura
     @Override
     public String toString() {
-        return "Criatura{" +
-                "nombre='" + nombre + '\'' +
-                ", salud=" + salud +
-                ", fuerza=" + fuerza +
-                '}';
+        return nombre + " | Salud: " + salud + " | Fuerza: " + fuerza;
     }
-
 }
