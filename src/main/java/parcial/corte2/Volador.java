@@ -1,14 +1,13 @@
 package parcial.corte2;
 
 /**
- * Interfaz Volador
- * Define el comportamiento de las criaturas que tienen la capacidad de volar.
- * Esta interfaz es implementada por criaturas como el Dragon.
- *
- * Decisión de diseño: Se usa una interfaz en lugar de una clase abstracta
- * porque "volar" es una habilidad adicional que no todas las criaturas poseen,
- * y no forma parte de la jerarquía principal de Criatura.
+ * Interfaz Volador.
+ * Se usa una interfaz porque "volar" es una habilidad
+ * que no todas las criaturas tienen. Las interfaces permiten agregar
+ * comportamientos específicos sin cambiar la jerarquía de clases.
+ * Así, solo el Dragon (y cualquier otra criatura voladora) la implementa.
  */
+
 public interface Volador {
 
     /**
@@ -19,7 +18,8 @@ public interface Volador {
 
     /**
      * Permite a la criatura aterrizar.
-     * Cada criatura que implemente esta interfaz define su propia forma de aterrizar.
+     * Cada criatura que implemente esta interfaz define su propia forma de
+     * aterrizar.
      */
     void aterrizar();
 }

@@ -1,4 +1,6 @@
-public abstract class Criatura {
+package parcial.corte2;
+
+    ic abstract class Criatura {
  
     // Atributos básicos de toda criatura
     protected String nombre;
